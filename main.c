@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 
 #include "ch.h"
 #include "hal.h"
@@ -14,6 +15,8 @@
 
 #include <pi_regulator.h>
 #include <process_image.h>
+
+
 
 void SendUint8ToComputer(uint8_t* data, uint16_t size) 
 {
@@ -36,7 +39,6 @@ static void serial_start(void)
 
 int main(void)
 {
-
     halInit();
     chSysInit();
     mpu_init();
@@ -51,15 +53,36 @@ int main(void)
 	//inits the motors
 	motors_init();
 
+	//left_motor_set_speed(1000);
+	//right_motor_set_speed(1000);
+
+	motors_set_pos(200, 200, 300, 300);
+	chThdSleepMilliseconds(1000);
+	motors_set_pos(200, 200, 1100, 1100);
+	chThdSleepMilliseconds(1000);
+	motors_set_pos(400, 400, -400, -400);
+	chThdSleepMilliseconds(1000);
+	motors_set_pos(323, 323, 400, -400);
+	chThdSleepMilliseconds(1000);
+	motors_set_pos(1200, 1200, 400, 400);
+	chThdSleepMilliseconds(1000);
+	motors_set_pos(200, 200, 1100, 1100);
+	motors_set_pos(200, 200, -1100, -1100);
+	motors_set_pos(200, 200, 1100, 1100);
+	motors_set_pos(200, 200, -1100, -1100);
+	motors_set_pos(200, 200, 1100, 1100);
+	motors_set_pos(200, 200, -1100, -1100);
+
 	//stars the threads for the pi regulator and the processing of the image
-	pi_regulator_start();
-	process_image_start();
+	// pi_regulator_start();
+	// process_image_start();
 
     /* Infinite loop. */
-    while (1) {
+    /*while (1) {
     	//waits 1 second
         chThdSleepMilliseconds(1000);
     }
+    */
 }
 
 #define STACK_CHK_GUARD 0xe2dee396
