@@ -40,6 +40,7 @@ static void serial_start(void)
 
 int main(void)
 {
+
     halInit();
     chSysInit();
     mpu_init();
@@ -57,22 +58,24 @@ int main(void)
 	//left_motor_set_speed(1000);
 	//right_motor_set_speed(1000);
 
+	//motors_set_pos(3,3,-2,-2);
+	scan(RIGHT, MIDDLE_SPEED, 180);
+
 	// pluck();
 	// deposit();
 
-	VL53L0X_get_dist_mm();
+	/*while(1)
+	{
+		a = VL53L0X_get_dist_mm();
+		chThdSleepMilliseconds(500);
 
+	}
+	*/
 
 	//stars the threads for the pi regulator and the processing of the image
 	// pi_regulator_start();
 	// process_image_start();
 
-    /* Infinite loop. */
-    /*while (1) {
-    	//waits 1 second
-        chThdSleepMilliseconds(1000);
-    }
-    */
 }
 
 #define STACK_CHK_GUARD 0xe2dee396
