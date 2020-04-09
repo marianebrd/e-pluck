@@ -53,12 +53,15 @@ int main(void)
 	po8030_start();
 	//inits the motors
 	motors_init();
-
+	VL53L0X_start();
 	//left_motor_set_speed(1000);
 	//right_motor_set_speed(1000);
 
-	pluck();
-	deposit();
+	// pluck();
+	// deposit();
+
+	VL53L0X_get_dist_mm();
+
 
 	//stars the threads for the pi regulator and the processing of the image
 	// pi_regulator_start();
