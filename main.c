@@ -13,11 +13,12 @@
 #include <moves.h>
 #include <camera/po8030.h>
 #include <chprintf.h>
+#include <sensors/VL53L0X/VL53L0X.h>
 
 #include <pi_regulator.h>
 #include <process_image.h>
 
-
+#define TRACKING_BUFFER_SIZE		180
 
 void SendUint8ToComputer(uint8_t* data, uint16_t size) 
 {
@@ -25,6 +26,14 @@ void SendUint8ToComputer(uint8_t* data, uint16_t size)
 	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)&size, sizeof(uint16_t));
 	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)data, size);
 }
+
+void SendUint16ToComputer(uint16_t* data, uint16_t size)
+{
+	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)"START", 5);
+	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)&size, sizeof(uint16_t));
+	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)data, sizeof(uint16_t)*size);
+}
+
 
 static void serial_start(void)
 {
@@ -40,6 +49,9 @@ static void serial_start(void)
 
 int main(void)
 {
+	int j = 0;
+	volatile uint16_t object_pos[180] = {0};
+	volatile uint16_t d;
 
     halInit();
     chSysInit();
@@ -55,26 +67,39 @@ int main(void)
 	//inits the motors
 	motors_init();
 	VL53L0X_start();
-	//left_motor_set_speed(1000);
-	//right_motor_set_speed(1000);
 
 	//motors_set_pos(3,3,-2,-2);
-	scan(RIGHT, MIDDLE_SPEED, 180);
 
 	// pluck();
 	// deposit();
+	chThdSleepMilliseconds(1000);
 
-	/*while(1)
+	for (int i=0; i<=179; i++)
 	{
-		a = VL53L0X_get_dist_mm();
-		chThdSleepMilliseconds(500);
+		chThdSleepMilliseconds(100);
+		turn(RIGHT, MIDDLE_SPEED, 1);  // tourne de 1 degré
+		d = VL53L0X_get_dist_mm();  // mesure TOF
 
+		object_pos[j] = d;
+		j++;
+
+//			if (d < 150){
+//				if ((j == 0) | ((i - object_pos[j-1]) >= OBJECT_WIDTH))
+//				{
+//				object_pos[j] = i;
+//				j++;
+//				}
+//			}
 	}
-	*/
 
-	//stars the threads for the pi regulator and the processing of the image
-	// pi_regulator_start();
-	// process_image_start();
+	chThdSleepMilliseconds(100);
+	SendUint16ToComputer(object_pos, TRACKING_BUFFER_SIZE);
+
+	while(1)
+	{
+		// d = VL53L0X_get_dist_mm();
+		chThdSleepMilliseconds(100);
+	}
 
 }
 

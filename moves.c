@@ -10,6 +10,7 @@
 #include "hal.h"
 #include "chprintf.h"
 #include "usbcfg.h"
+#include <sensors/VL53L0X/VL53L0X.h>
 
 static int l_pos;
 static int r_pos;
@@ -76,7 +77,7 @@ void deposit(void) {
 	motors_set_pos(200, 200, -700, -700);
 }
 
-void scan(bool direction, int turn_speed, int turn_angle) {
+void turn(bool direction, int turn_speed, int turn_angle) {
 	// this function detects object around the e-puck
 
 	// flags initialization
@@ -103,8 +104,6 @@ void scan(bool direction, int turn_speed, int turn_angle) {
 		// tracking
 		l_pos = left_motor_get_pos();
 		r_pos = right_motor_get_pos();
-
-//		VL53L0X_get_dist_mm();
 
 		// left motor stopped if his position reached
 		if (abs(l_pos) >= turn_angle*ANGLE_TO_NSTEP){
