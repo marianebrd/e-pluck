@@ -129,6 +129,30 @@ static THD_FUNCTION(ProcessImage, arg) {
     (void)arg;
 
 	uint8_t *img_buff_ptr;
+	uint8_t image_r[IMAGE_BUFFER_SIZE] = {0};
+	uint8_t image_g[IMAGE_BUFFER_SIZE] = {0};
+	uint8_t image_b[IMAGE_BUFFER_SIZE] = {0};
+	uint16_t lineWidth = 0;
+
+	bool send_to_computer = true;
+
+    while(1){
+    	//waits until an image has been captured
+        chBSemWait(&image_ready_sem);
+		//gets the pointer to the array filled with the last image in RGB565
+		img_buff_ptr = dcmi_get_last_image_ptr();
+
+		//Extracts only the red pixels
+		for(uint16_t i = (160 * IMAGE_BUFFER_SIZE) ; i < (480 * IMAGE_BUFFER_SIZE) ; i++){
+			for(uint16_t j = 0 ; j < 240 ; j++){
+				image_r[i] = (uint8_t)img_buff_ptr[i]&0xF8;
+				image_g[i] = (uint8_t)img_buff_ptr[i]&(0xE0/0x20+0x0B*0x10);
+				image_b[i] = (uint8_t)img_buff_ptr[i]&0x1F;
+			}
+		}
+
+ /*
+	uint8_t *img_buff_ptr;
 	uint8_t image[IMAGE_BUFFER_SIZE] = {0};
 	uint16_t lineWidth = 0;
 
@@ -146,6 +170,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 			//takes nothing from the second byte
 			image[i/2] = (uint8_t)img_buff_ptr[i]&0xF8;
 		}
+*/
 
 		//search for an apple in the image and gets its width in pixels
 		appleWidth = extract_apple_width(image);
@@ -153,7 +178,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 		//converts the width into a distance between the robot and the camera
 		if(appleWidth){
 			distance_cm = PXTOCM/lineWidth;
-/* INSERT HERE ? */
+
 		}
 
 		if(send_to_computer){
