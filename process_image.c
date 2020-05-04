@@ -8,96 +8,8 @@
 
 #include <process_image.h>
 
-
-static float distance_cm = 0;
-static uint16_t apple_position = IMAGE_BUFFER_SIZE/2;	//middle
-
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
-
-/*
- *  Detects if there is an apple
- *  Returns 0 if apple not found
- */
-uint16_t extract_apple_width(uint8_t *buffer){
-
-	uint16_t i = 0, begin = 0, end = 0, width = 0;
-	uint8_t stop = 0, wrong_apple, apple_not_found = 0;
-	uint32_t mean = 0;
-
-	static uint16_t last_width = PXTOCM/GOAL_DISTANCE;
-
-	//performs an average
-	for(uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
-		mean += buffer[i];
-	}
-	mean /= IMAGE_BUFFER_SIZE;
-
-	do{
-		wrong_apple = 0;
-		//search for a begin
-		while(stop == 0 && i < (IMAGE_BUFFER_SIZE - WIDTH_SLOPE))
-		{
-			//the slope must at least be WIDTH_SLOPE wide and is compared
-		    //to the mean of the image
-		    if(buffer[i] > mean && buffer[i+WIDTH_SLOPE] < mean)
-		    {
-		        begin = i;
-		        stop = 1;
-		    }
-		    i++;
-		}
-		//if a begin was found, search for an end
-		if (i < (IMAGE_BUFFER_SIZE - WIDTH_SLOPE) && begin)
-		{
-		    stop = 0;
-
-		    while(stop == 0 && i < IMAGE_BUFFER_SIZE)
-		    {
-		        if(buffer[i] > mean && buffer[i-WIDTH_SLOPE] < mean)
-		        {
-		            end = i;
-		            stop = 1;
-		        }
-		        i++;
-		    }
-		    //if an end was not found
-		    if (i > IMAGE_BUFFER_SIZE || !end)
-		    {
-		        apple_not_found = 1;
-		    }
-		}
-		else//if no begin was found
-		{
-		    apple_not_found = 1;
-		}
-
-		//if a line too small has been detected, continues the search
-		if(!apple_not_found && (end-begin) < MIN_LINE_WIDTH){
-			i = end;
-			begin = 0;
-			end = 0;
-			stop = 0;
-			wrong_apple = 1;
-		}
-	}while(wrong_apple);
-
-	if(apple_not_found){
-		begin = 0;
-		end = 0;
-		width = last_width;
-	}else{
-		last_width = width = (end - begin);
-		apple_position = (begin + end)/2; //gives the apple position.
-	}
-
-	//sets a maximum width or returns the measured width
-	if((PXTOCM/width) > MAX_DISTANCE){
-		return PXTOCM/MAX_DISTANCE;
-	}else{
-		return width;
-	}
-}
 
 static THD_WORKING_AREA(waCaptureImage, 256);
 static THD_FUNCTION(CaptureImage, arg) {
@@ -129,10 +41,10 @@ static THD_FUNCTION(ProcessImage, arg) {
     (void)arg;
 
 	uint8_t *img_buff_ptr;
+	uint8_t image[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t image_r[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t image_g[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t image_b[IMAGE_BUFFER_SIZE] = {0};
-	uint16_t lineWidth = 0;
 
 	bool send_to_computer = true;
 
@@ -142,43 +54,21 @@ static THD_FUNCTION(ProcessImage, arg) {
 		//gets the pointer to the array filled with the last image in RGB565
 		img_buff_ptr = dcmi_get_last_image_ptr();
 
-		//Extracts only the red pixels
-		for(uint16_t i = (160 * IMAGE_BUFFER_SIZE) ; i < (480 * IMAGE_BUFFER_SIZE) ; i++){
-			for(uint16_t j = 0 ; j < 240 ; j++){
-				image_r[i] = (uint8_t)img_buff_ptr[i]&0xF8;
-				image_g[i] = (uint8_t)img_buff_ptr[i]&(0xE0/0x20+0x0B*0x10);
-				image_b[i] = (uint8_t)img_buff_ptr[i]&0x1F;
+		//Extracts RGB pixels
+		for(uint32_t i = (160 * IMAGE_BUFFER_SIZE) ; i < (480 * IMAGE_BUFFER_SIZE) ; i++){
+			for(uint8_t j = 0 ; j < 240 ; j++){
+				if(i%2){
+					image_r[i/2] = (uint8_t)img_buff_ptr[i]&0xF8;
+					image_g[i/2] = (uint8_t)img_buff_ptr[i]&(0x07 << 3);
+				}
+				else{
+					image_b[i/2+1] = (uint8_t)img_buff_ptr[i]&0x1F;
+					image_g[i/2+1] = (uint8_t)img_buff_ptr[i]&(0xE0 >> 5);
+				}
+				image_g[i] = image_g[i/2] + image_g[i/2+1];
+
+				image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
 			}
-		}
-
- /*
-	uint8_t *img_buff_ptr;
-	uint8_t image[IMAGE_BUFFER_SIZE] = {0};
-	uint16_t lineWidth = 0;
-
-	bool send_to_computer = true;
-
-    while(1){
-    	//waits until an image has been captured
-        chBSemWait(&image_ready_sem);
-		//gets the pointer to the array filled with the last image in RGB565    
-		img_buff_ptr = dcmi_get_last_image_ptr();
-
-		//Extracts only the red pixels
-		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i+=2){
-			//extracts first 5bits of the first byte
-			//takes nothing from the second byte
-			image[i/2] = (uint8_t)img_buff_ptr[i]&0xF8;
-		}
-*/
-
-		//search for an apple in the image and gets its width in pixels
-		appleWidth = extract_apple_width(image);
-
-		//converts the width into a distance between the robot and the camera
-		if(appleWidth){
-			distance_cm = PXTOCM/lineWidth;
-
 		}
 
 		if(send_to_computer){
@@ -190,12 +80,69 @@ static THD_FUNCTION(ProcessImage, arg) {
     }
 }
 
-float get_distance_cm(void){
-	return distance_cm;
+uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
+	// RGB values are divided by 255
+	// to change the range from 0..255 to 0..1:
+	uint8_t h, s, v;
+	r /= 255;
+	g /= 255;
+	b /= 255;
+	uint8_t cmax = max_value(r,g,b);
+	uint8_t cmin = min_value(r,g,b);
+	uint8_t diff = cmax-cmin;
+
+	// compute h
+	if (cmax == cmin)
+	      h = 0;
+	else if (cmax == r)
+	      h = (60 * ((g - b) / diff) + 360) % 360;
+	else if (cmax == g)
+	      h = (60 * ((b - r) / diff) + 120) % 360;
+	else if (cmax == b)
+	      h = (60 * ((r - g) / diff) + 240) % 360;
+
+	// compute s
+	if (cmax == 0)
+	      s = 0;
+	else
+	      s = (diff / cmax) * 100;
+
+	// compute v
+	v = cmax * 100;
+
+	return 0;
 }
 
-uint16_t get_line_position(void){
-	return line_position;
+uint8_t max_value(uint8_t a, uint8_t b, uint8_t c){
+	uint8_t max = 0;
+	if (a > b){
+		max = a;
+		if (c > max)
+			max = c;
+	}
+	else{
+		max = b;
+		if(c > max)
+			max = c;
+	}
+
+	return max;
+}
+
+uint8_t min_value(uint8_t a, uint8_t b, uint8_t c){
+	uint8_t min = 0;
+	if (a < b){
+		min = a;
+		if (c < min)
+			min = c;
+	}
+	else{
+		min = b;
+		if(c < min)
+			min = c;
+	}
+
+	return min;
 }
 
 void process_image_start(void){

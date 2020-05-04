@@ -125,7 +125,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00000000 l    df *ABS*	00000000 _arm_cmpdf2.o
 00000000 l    df *ABS*	00000000 _arm_unorddf2.o
 00000000 l    df *ABS*	00000000 main.c
-20000804 l     O .data	0000000c ser_cfg.12810
+20000804 l     O .data	0000000c ser_cfg.12816
 00000000 l    df *ABS*	00000000 moves.c
 20001498 l     O .bss	00000004 l_pos
 2000149c l     O .bss	00000004 r_pos
@@ -495,8 +495,8 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 08006630 g     F .text	00000034 _scheduler_init
 08009b10 g     F .text	00000038 usbObjectInit
 08002c40 g     F .text	00000048 VL53L0X_GetWrapAroundCheckEnable
-08006a30 g     F .text	00000048 chSchRescheduleS
 08006c00 g     F .text	000000b0 chThdCreateStatic
+08006a30 g     F .text	00000048 chSchRescheduleS
 08001560 g     F .text	00000028 dcmiObjectInit
 080071f0 g     F .text	00000040 _stats_ctxswc
 0800b630 g     F .text	000000ac Vector94

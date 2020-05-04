@@ -146,7 +146,7 @@ build/obj/main.o: main.c \
  ../../lib/e-puck2_main-processor/src/motors.h moves.h \
  ../../lib/e-puck2_main-processor/src/camera/po8030.h \
  ../../lib/e-puck2_main-processor/ChibiOS//os/hal/lib/streams/chprintf.h \
- pi_regulator.h process_image.h
+ process_image.h
 
 c:\users\maria\documents\eclipse_e-puck2_win32_29_jan_2020\eclipse_e-puck2\tools\gcc-arm-none-eabi-7-2017-q4-major-win32\arm-none-eabi\include\stdio.h:
 
@@ -447,7 +447,5 @@ moves.h:
 ../../lib/e-puck2_main-processor/src/camera/po8030.h:
 
 ../../lib/e-puck2_main-processor/ChibiOS//os/hal/lib/streams/chprintf.h:
-
-pi_regulator.h:
 
 process_image.h:

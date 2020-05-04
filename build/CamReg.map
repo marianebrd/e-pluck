@@ -181,78 +181,43 @@ Discarded input sections
                 0x00000000       0x58 build/obj/main.o
  .rodata.SendUint8ToComputer.str1.4
                 0x00000000        0x6 build/obj/main.o
- .text          0x00000000        0x0 build/obj/pi_regulator.o
- .data          0x00000000        0x0 build/obj/pi_regulator.o
- .bss           0x00000000        0x0 build/obj/pi_regulator.o
- .text.PiRegulator
-                0x00000000      0x130 build/obj/pi_regulator.o
- .text.pi_regulator
-                0x00000000       0xb0 build/obj/pi_regulator.o
- .text.pi_regulator_start
-                0x00000000       0x38 build/obj/pi_regulator.o
- .bss.sum_error.11852
-                0x00000000        0x4 build/obj/pi_regulator.o
- .bss.waPiRegulator
-                0x00000000      0x278 build/obj/pi_regulator.o
- .rodata.__FUNCTION__.11857
-                0x00000000        0xc build/obj/pi_regulator.o
- .rodata.__func__.7153
-                0x00000000        0xc build/obj/pi_regulator.o
- .debug_info    0x00000000     0x4873 build/obj/pi_regulator.o
- .debug_abbrev  0x00000000      0x481 build/obj/pi_regulator.o
- .debug_loc     0x00000000      0x1c8 build/obj/pi_regulator.o
- .debug_aranges
-                0x00000000       0x30 build/obj/pi_regulator.o
- .debug_ranges  0x00000000       0x60 build/obj/pi_regulator.o
- .debug_line    0x00000000      0xb65 build/obj/pi_regulator.o
- .debug_str     0x00000000     0x26b7 build/obj/pi_regulator.o
- .comment       0x00000000       0x7f build/obj/pi_regulator.o
- .debug_frame   0x00000000       0x98 build/obj/pi_regulator.o
- .ARM.attributes
-                0x00000000       0x39 build/obj/pi_regulator.o
  .text          0x00000000        0x0 build/obj/process_image.o
  .data          0x00000000        0x0 build/obj/process_image.o
  .bss           0x00000000        0x0 build/obj/process_image.o
+ .text.ProcessImage
+                0x00000000       0x70 build/obj/process_image.o
  .text.CaptureImage
                 0x00000000       0xa4 build/obj/process_image.o
- .text.extract_line_width
-                0x00000000       0xe8 build/obj/process_image.o
- .text.ProcessImage
-                0x00000000       0x98 build/obj/process_image.o
- .text.get_distance_cm
-                0x00000000       0x2c build/obj/process_image.o
- .text.get_line_position
-                0x00000000       0x28 build/obj/process_image.o
+ .text.rgb_to_hsv
+                0x00000000       0x24 build/obj/process_image.o
+ .text.max_value
+                0x00000000       0x34 build/obj/process_image.o
+ .text.min_value
+                0x00000000       0x34 build/obj/process_image.o
  .text.process_image_start
                 0x00000000       0x50 build/obj/process_image.o
- .bss.distance_cm
-                0x00000000        0x4 build/obj/process_image.o
  .bss.waCaptureImage
                 0x00000000      0x278 build/obj/process_image.o
  .bss.waProcessImage
                 0x00000000      0x578 build/obj/process_image.o
  .data.image_ready_sem
                 0x00000000        0xc build/obj/process_image.o
- .data.last_width.11339
-                0x00000000        0x2 build/obj/process_image.o
- .data.line_position
-                0x00000000        0x2 build/obj/process_image.o
- .rodata.__FUNCTION__.11356
+ .rodata.__FUNCTION__.11338
                 0x00000000        0xd build/obj/process_image.o
- .rodata.__FUNCTION__.11362
+ .rodata.__FUNCTION__.11344
                 0x00000000        0xd build/obj/process_image.o
  .rodata.__func__.7153
                 0x00000000        0xc build/obj/process_image.o
- .debug_info    0x00000000     0x4bbb build/obj/process_image.o
- .debug_abbrev  0x00000000      0x468 build/obj/process_image.o
- .debug_loc     0x00000000      0x2c8 build/obj/process_image.o
+ .debug_info    0x00000000     0x4c3d build/obj/process_image.o
+ .debug_abbrev  0x00000000      0x486 build/obj/process_image.o
+ .debug_loc     0x00000000      0x38c build/obj/process_image.o
  .debug_aranges
                 0x00000000       0x48 build/obj/process_image.o
  .debug_ranges  0x00000000       0xe0 build/obj/process_image.o
- .debug_line    0x00000000      0xc6d build/obj/process_image.o
- .debug_str     0x00000000     0x28f0 build/obj/process_image.o
+ .debug_line    0x00000000      0xc0c build/obj/process_image.o
+ .debug_str     0x00000000     0x28a2 build/obj/process_image.o
  .comment       0x00000000       0x7f build/obj/process_image.o
- .debug_frame   0x00000000       0xf8 build/obj/process_image.o
+ .debug_frame   0x00000000       0xe4 build/obj/process_image.o
  .ARM.attributes
                 0x00000000       0x39 build/obj/process_image.o
  .text          0x00000000        0x0 build/obj/moves.o
@@ -6473,7 +6438,6 @@ Linker script and memory map
 LOAD build/obj/crt0_v7m.o
 LOAD build/obj/chcoreasm_v7m.o
 LOAD build/obj/main.o
-LOAD build/obj/pi_regulator.o
 LOAD build/obj/process_image.o
 LOAD build/obj/moves.o
 LOAD build/obj/spi3_slave_lld.o
@@ -8860,7 +8824,7 @@ destructors     0x080001c0        0x0
  .data.__stack_chk_guard
                 0x20000800        0x4 build/obj/main.o
                 0x20000800                __stack_chk_guard
- .data.ser_cfg.12810
+ .data.ser_cfg.12816
                 0x20000804        0xc build/obj/main.o
  .data.lock     0x20000810       0x14 build/obj/malloc_lock.o
  .data.DefaultTuningSettings
@@ -11258,7 +11222,6 @@ __stack_chk_fail                                  build/obj/main.o
                                                   build/obj/spi3_slave_lld.o
                                                   build/obj/moves.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
 __stack_chk_guard                                 build/obj/main.o
                                                   build/obj/aseba_bridge.o
                                                   build/obj/skel_user.o
@@ -11418,7 +11381,6 @@ __stack_chk_guard                                 build/obj/main.o
                                                   build/obj/spi3_slave_lld.o
                                                   build/obj/moves.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
 __subdf3                                          c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard\libgcc.a(_arm_addsubdf3.o)
 __submore                                         c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libg.a(lib_a-ungetc.o)
                                                   c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libg.a(lib_a-svfiscanf.o)
@@ -11532,7 +11494,6 @@ _dbg_check_lock                                   build/obj/chdebug.o
                                                   build/obj/spi3_slave.o
                                                   build/obj/dcmi.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
                                                   build/obj/chcoreasm_v7m.o
 _dbg_check_lock_from_isr                          build/obj/chdebug.o
                                                   build/obj/testsys.o
@@ -11610,7 +11571,6 @@ _dbg_check_unlock                                 build/obj/chdebug.o
                                                   build/obj/spi3_slave.o
                                                   build/obj/dcmi.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
                                                   build/obj/chcoreasm_v7m.o
 _dbg_check_unlock_from_isr                        build/obj/chdebug.o
                                                   build/obj/testsys.o
@@ -11859,7 +11819,6 @@ _stats_start_measure_crit_thd                     build/obj/chstats.o
                                                   build/obj/spi3_slave.o
                                                   build/obj/dcmi.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
                                                   build/obj/chcoreasm_v7m.o
 _stats_stop_measure_crit_isr                      build/obj/chstats.o
                                                   build/obj/testsys.o
@@ -11935,7 +11894,6 @@ _stats_stop_measure_crit_thd                      build/obj/chstats.o
                                                   build/obj/spi3_slave.o
                                                   build/obj/dcmi.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
                                                   build/obj/chcoreasm_v7m.o
 _stm32_dma_streams                                build/obj/stm32_dma.o
                                                   build/obj/spi_lld.o
@@ -12217,7 +12175,6 @@ ch                                                build/obj/chschd.o
                                                   build/obj/dcmi.o
                                                   build/obj/dcmi_lld.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
 chCondBroadcast                                   build/obj/chcond.o
                                                   build/obj/testmtx.o
                                                   build/obj/play_sound_file.o
@@ -12650,7 +12607,6 @@ chSysHalt                                         build/obj/chsys.o
                                                   build/obj/dcmi_lld.o
                                                   build/obj/spi3_slave_lld.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
                                                   build/obj/main.o
 chSysInit                                         build/obj/chsys.o
                                                   build/obj/main.o
@@ -12713,7 +12669,6 @@ chThdCreateStatic                                 build/obj/chthreads.o
                                                   build/obj/play_melody.o
                                                   build/obj/mp45dt02_processing.o
                                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
 chThdDequeueAllI                                  build/obj/chthreads.o
                                                   build/obj/usb_lld.o
                                                   build/obj/can_lld.o
@@ -12787,7 +12742,6 @@ chThdSleepUntil                                   build/obj/chthreads.o
 chThdSleepUntilWindowed                           build/obj/chthreads.o
                                                   build/obj/imu.o
                                                   build/obj/ir_remote.o
-                                                  build/obj/pi_regulator.o
 chThdStart                                        build/obj/chthreads.o
                                                   build/obj/testthd.o
 chThdSuspendS                                     build/obj/chthreads.o
@@ -13436,7 +13390,6 @@ exti_events                                       build/obj/exti.o
                                                   build/obj/imu.o
                                                   build/obj/ir_remote.o
 exti_start                                        build/obj/exti.o
-extract_line_width                                build/obj/process_image.o
 f_chmod                                           build/obj/ff.o
 f_close                                           build/obj/ff.o
                                                   build/obj/play_sound_file.o
@@ -13559,8 +13512,6 @@ get_battery_voltage                               build/obj/battery_level.o
                                                   build/obj/utility.o
 get_calibrated_prox                               build/obj/proximity.o
                                                   build/obj/e_prox.o
-get_distance_cm                                   build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
 get_fat                                           build/obj/ff.o
 get_fattime                                       build/obj/fatfs_diskio.o
                                                   build/obj/ff.o
@@ -13574,8 +13525,6 @@ get_gyro_offset                                   build/obj/imu.o
                                                   build/obj/e_lsm330.o
 get_gyro_rate                                     build/obj/imu.o
 get_last_i2c_error                                build/obj/i2c_bus.o
-get_line_position                                 build/obj/process_image.o
-                                                  build/obj/pi_regulator.o
 get_next_good_spad                                build/obj/vl53l0x_api_calibration.o
 get_prox                                          build/obj/proximity.o
                                                   build/obj/e_prox.o
@@ -13726,7 +13675,6 @@ left_motor_set_speed                              build/obj/motors.o
                                                   build/obj/e_motors.o
                                                   build/obj/cmd.o
                                                   build/obj/moves.o
-                                                  build/obj/pi_regulator.o
 localEvents                                       build/obj/skel_user.o
                                                   build/obj/aseba_node.o
 localeconv                                        c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libg.a(lib_a-localeconv.o)
@@ -13738,6 +13686,7 @@ malloc                                            c:/users/maria/documents/eclip
                                                   build/obj/dcmi_camera.o
 matherr                                           c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-s_matherr.o)
                                                   c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-wf_sqrt.o)
+max_value                                         build/obj/process_image.o
 mbrtowc                                           c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libg.a(lib_a-mbrtowc.o)
 memchr                                            c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libg.a(lib_a-memchr.o)
                                                   c:/users/maria/documents/eclipse_e-puck2_win32_29_jan_2020/eclipse_e-puck2/tools/gcc-arm-none-eabi-7-2017-q4-major-win32/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libg.a(lib_a-svfiprintf.o)
@@ -13833,6 +13782,7 @@ mic_get_volume                                    build/obj/microphone.o
                                                   build/obj/cmd.o
 mic_start                                         build/obj/microphone.o
                                                   build/obj/e_ad_conv.o
+min_value                                         build/obj/process_image.o
 motor_set_speed                                   build/obj/motors.o
 motors_init                                       build/obj/motors.o
                                                   build/obj/main.o
@@ -14009,8 +13959,6 @@ patternsys                                        build/obj/testsys.o
 patternthd                                        build/obj/testthd.o
                                                   build/obj/test.o
 perform_ref_signal_measurement                    build/obj/vl53l0x_api_calibration.o
-pi_regulator                                      build/obj/pi_regulator.o
-pi_regulator_start                                build/obj/pi_regulator.o
 ping_cb                                           build/obj/communication.o
 playMelody                                        build/obj/play_melody.o
                                                   build/obj/Asercom2.o
@@ -14113,6 +14061,7 @@ read_reg_multi                                    build/obj/i2c_bus.o
                                                   build/obj/mpu9250.o
 refArrayQuadrants                                 build/obj/vl53l0x_api_calibration.o
 resetTime                                         build/obj/utility.o
+rgb_to_hsv                                        build/obj/process_image.o
 right_led                                         build/obj/e_led.o
 right_motor                                       build/obj/motors.o
 right_motor_disable_power_save                    build/obj/motors.o
@@ -14128,7 +14077,6 @@ right_motor_set_speed                             build/obj/motors.o
                                                   build/obj/e_motors.o
                                                   build/obj/cmd.o
                                                   build/obj/moves.o
-                                                  build/obj/pi_regulator.o
 run_asercom                                       build/obj/Asercom.o
 run_asercom2                                      build/obj/Asercom2.o
 scan                                              build/obj/moves.o
