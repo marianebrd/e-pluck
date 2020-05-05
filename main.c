@@ -54,27 +54,21 @@ int main(void)
 	//inits the motors
 	motors_init();
 	VL53L0X_start();
-	//left_motor_set_speed(1000);
-	//right_motor_set_speed(1000);
+	//stars the threads for the processing of the image
+	process_image_start();
 
-	//motors_set_pos(3,3,-2,-2);
-	scan(RIGHT, MIDDLE_SPEED, 180);
+	uint8_t c = 20;
+
+	//scan(RIGHT, MIDDLE_SPEED, 180);
 
 	// pluck();
 	// deposit();
 
-	/*while(1)
+	while(1)
 	{
-		a = VL53L0X_get_dist_mm();
+		c = get_color();
 		chThdSleepMilliseconds(500);
-
 	}
-	*/
-
-	//stars the threads for the pi regulator and the processing of the image
-	// pi_regulator_start();
-	// process_image_start();
-
 }
 
 #define STACK_CHK_GUARD 0xe2dee396

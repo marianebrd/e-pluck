@@ -8,6 +8,8 @@
 
 #include <process_image.h>
 
+static uint8_t color = 10;
+
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
 
@@ -41,10 +43,10 @@ static THD_FUNCTION(ProcessImage, arg) {
     (void)arg;
 
 	uint8_t *img_buff_ptr;
-	uint8_t image[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t image_r[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t image_g[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t image_b[IMAGE_BUFFER_SIZE] = {0};
+	uint8_t image[IMAGE_BUFFER_SIZE] = {0};
 
 	uint8_t buffer1[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t buffer2[IMAGE_BUFFER_SIZE] = {0};
@@ -71,7 +73,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 			image_g[i/2] = (buffer1[i/2] + buffer2[i/2+1])*(32/64); //conversion 6 bits on 5 bits
 		}
 
-		//Read the tab
+		//converts the rgb values to hsv
 		for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
 			image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
 		}
@@ -88,14 +90,15 @@ static THD_FUNCTION(ProcessImage, arg) {
 uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	// RGB values are divided by 255
 	// to change the range from 0..255 to 0..1:
-	uint8_t h, s, v;
+	uint8_t h = 0;
+	uint8_t s = 0;
+	uint8_t v = 0;
 	r /= 255;
 	g /= 255;
 	b /= 255;
 	uint8_t cmax = max_value(r,g,b);
 	uint8_t cmin = min_value(r,g,b);
 	uint8_t diff = cmax-cmin;
-	uint8_t color;
 
 	// compute h
 	if (cmax == cmin)
@@ -118,14 +121,17 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 
 	if (v > 75){
 		if (s > 70){
-			if ((h < 20/360) && (h > 340/360))
+			if ((h < 0.1) && (h > 0.8))
 				color = 0;
-			else if ((h > 80/360) && (h < 160/360))
+			else if ((h > 0.1) && (h < 0.45))
 				color = 1;
-			else if ((h > 200/360) && (h < 260/360))
+			else if ((h > 0.45) && (h < 0.8))
 				color = 2;
+			else color = 3;
 		}
+		else color = 3;
 	}
+	else color = 3;
 
 	return color;
 }
@@ -160,6 +166,10 @@ uint8_t min_value(uint8_t a, uint8_t b, uint8_t c){
 	}
 
 	return min;
+}
+
+uint8_t get_color(void){
+	return color;
 }
 
 void process_image_start(void){
