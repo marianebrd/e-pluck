@@ -185,7 +185,7 @@ Discarded input sections
  .data          0x00000000        0x0 build/obj/process_image.o
  .bss           0x00000000        0x0 build/obj/process_image.o
  .text.ProcessImage
-                0x00000000       0x70 build/obj/process_image.o
+                0x00000000       0x64 build/obj/process_image.o
  .text.CaptureImage
                 0x00000000       0xa4 build/obj/process_image.o
  .text.rgb_to_hsv
@@ -208,16 +208,16 @@ Discarded input sections
                 0x00000000        0xd build/obj/process_image.o
  .rodata.__func__.7153
                 0x00000000        0xc build/obj/process_image.o
- .debug_info    0x00000000     0x4c3d build/obj/process_image.o
- .debug_abbrev  0x00000000      0x486 build/obj/process_image.o
- .debug_loc     0x00000000      0x38c build/obj/process_image.o
+ .debug_info    0x00000000     0x4c66 build/obj/process_image.o
+ .debug_abbrev  0x00000000      0x488 build/obj/process_image.o
+ .debug_loc     0x00000000      0x386 build/obj/process_image.o
  .debug_aranges
                 0x00000000       0x48 build/obj/process_image.o
  .debug_ranges  0x00000000       0xe0 build/obj/process_image.o
- .debug_line    0x00000000      0xc0c build/obj/process_image.o
- .debug_str     0x00000000     0x28a2 build/obj/process_image.o
+ .debug_line    0x00000000      0xc15 build/obj/process_image.o
+ .debug_str     0x00000000     0x28b8 build/obj/process_image.o
  .comment       0x00000000       0x7f build/obj/process_image.o
- .debug_frame   0x00000000       0xe4 build/obj/process_image.o
+ .debug_frame   0x00000000       0xe0 build/obj/process_image.o
  .ARM.attributes
                 0x00000000       0x39 build/obj/process_image.o
  .text          0x00000000        0x0 build/obj/moves.o

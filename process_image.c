@@ -46,6 +46,9 @@ static THD_FUNCTION(ProcessImage, arg) {
 	uint8_t image_g[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t image_b[IMAGE_BUFFER_SIZE] = {0};
 
+	uint8_t buffer1[IMAGE_BUFFER_SIZE] = {0};
+	uint8_t buffer2[IMAGE_BUFFER_SIZE] = {0};
+
 	bool send_to_computer = true;
 
     while(1){
@@ -55,20 +58,22 @@ static THD_FUNCTION(ProcessImage, arg) {
 		img_buff_ptr = dcmi_get_last_image_ptr();
 
 		//Extracts RGB pixels
-		for(uint32_t i = (160 * IMAGE_BUFFER_SIZE) ; i < (480 * IMAGE_BUFFER_SIZE) ; i++){
-			for(uint8_t j = 0 ; j < 240 ; j++){
-				if(i%2){
-					image_r[i/2] = (uint8_t)img_buff_ptr[i]&0xF8;
-					image_g[i/2] = (uint8_t)img_buff_ptr[i]&(0x07 << 3);
-				}
-				else{
-					image_b[i/2+1] = (uint8_t)img_buff_ptr[i]&0x1F;
-					image_g[i/2+1] = (uint8_t)img_buff_ptr[i]&(0xE0 >> 5);
-				}
-				image_g[i] = image_g[i/2] + image_g[i/2+1];
-
-				image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
+		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i++){
+			if(i%2){
+				image_r[i/2] = (uint8_t)img_buff_ptr[i]&(0xF8 >> 3); //red mask
+				buffer1[i/2] = (uint8_t)img_buff_ptr[i]&(0x07 << 3); //green mask on first line
 			}
+			else{
+				image_b[i/2+1] = (uint8_t)img_buff_ptr[i]&0x1F; //blue mask
+				buffer2[i/2+1] = (uint8_t)img_buff_ptr[i]&(0xE0 >> 5); //green mask on second line
+			}
+
+			image_g[i/2] = (buffer1[i/2] + buffer2[i/2+1])*(32/64); //conversion 6 bits on 5 bits
+		}
+
+		//Read the tab
+		for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
+			image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
 		}
 
 		if(send_to_computer){
@@ -90,6 +95,7 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	uint8_t cmax = max_value(r,g,b);
 	uint8_t cmin = min_value(r,g,b);
 	uint8_t diff = cmax-cmin;
+	uint8_t color;
 
 	// compute h
 	if (cmax == cmin)
@@ -110,7 +116,18 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	// compute v
 	v = cmax * 100;
 
-	return 0;
+	if (v > 75){
+		if (s > 70){
+			if ((h < 20/360) && (h > 340/360))
+				color = 0;
+			else if ((h > 80/360) && (h < 160/360))
+				color = 1;
+			else if ((h > 200/360) && (h < 260/360))
+				color = 2;
+		}
+	}
+
+	return color;
 }
 
 uint8_t max_value(uint8_t a, uint8_t b, uint8_t c){
