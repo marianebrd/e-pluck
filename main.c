@@ -73,7 +73,7 @@ int main(void)
 	// pluck();
 	// deposit();
 	chThdSleepMilliseconds(1000);
-
+/*
 	for (int i=0; i<=179; i++)
 	{
 		chThdSleepMilliseconds(100);
@@ -82,18 +82,20 @@ int main(void)
 
 		object_pos[j] = d;
 		j++;
+*/
 
-//			if (d < 150){
-//				if ((j == 0) | ((i - object_pos[j-1]) >= OBJECT_WIDTH))
-//				{
-//				object_pos[j] = i;
-//				j++;
-//				}
+//		if (d < 150){
+//			if ((j == 0) | ((i - object_pos[j-1]) >= OBJECT_WIDTH))
+//			{
+//			object_pos[j] = i;
+//			j++;
 //			}
-	}
+//		}
+//	}
 
 	chThdSleepMilliseconds(100);
 	SendUint16ToComputer(object_pos, TRACKING_BUFFER_SIZE);
+	process_image_start();
 
 	while(1)
 	{
