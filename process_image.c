@@ -8,7 +8,7 @@
 
 #include <process_image.h>
 
-static uint8_t color = 10;
+static uint8_t color_number = 10;
 
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
@@ -42,13 +42,13 @@ static THD_FUNCTION(ProcessImage, arg) {
     (void)arg;
 
 	uint8_t *img_buff_ptr;
-	uint8_t image_r[IMAGE_BUFFER_SIZE] = {0};
-	uint8_t image_g[IMAGE_BUFFER_SIZE] = {0};
-	uint8_t image_b[IMAGE_BUFFER_SIZE] = {0};
-	uint8_t image[IMAGE_BUFFER_SIZE] = {0};
+	static uint8_t image_r[IMAGE_BUFFER_SIZE] = {0};
+	static uint8_t image_g[IMAGE_BUFFER_SIZE] = {0};
+	static uint8_t image_b[IMAGE_BUFFER_SIZE] = {0};
+	static uint8_t image[IMAGE_BUFFER_SIZE] = {0};
 
-	uint8_t buffer1[IMAGE_BUFFER_SIZE] = {0};
-	uint8_t buffer2[IMAGE_BUFFER_SIZE] = {0};
+	static uint8_t buffer1[IMAGE_BUFFER_SIZE] = {0};
+	static uint8_t buffer2[IMAGE_BUFFER_SIZE] = {0};
 
     while(1){
     	//waits until an image has been captured
@@ -58,22 +58,23 @@ static THD_FUNCTION(ProcessImage, arg) {
 
 		//Extracts RGB pixels
 		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i++){
-			if(i%2){
-				image_r[i/2] = (uint8_t)img_buff_ptr[i]&(0xF8 >> 3); //red mask
-				buffer1[i/2] = (uint8_t)img_buff_ptr[i]&(0x07 << 3); //green mask on first line
+			if(i%2 == 0){
+				image_r[i/2] = (((uint8_t)img_buff_ptr[i]&0xF8) >> 3)*255 / 31; //red mask
+				buffer1[i/2] = ((uint8_t)img_buff_ptr[i]&0x07) << 3; //green mask on first line
 			}
 			else{
-				image_b[i/2+1] = (uint8_t)img_buff_ptr[i]&0x1F; //blue mask
-				buffer2[i/2+1] = (uint8_t)img_buff_ptr[i]&(0xE0 >> 5); //green mask on second line
+				image_b[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0x1F)*255 / 31; //blue mask
+				buffer2[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0xE0) >> 5; //green mask on second line
 			}
-
-			image_g[i/2] = (buffer1[i/2] + buffer2[i/2+1])*1/2; //conversion 6 bits on 5 bits
 		}
 
 		//converts the rgb values to hsv
 		for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
-			image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
+			image_g[i] = ((buffer1[i] | buffer2[i]))*255 / 63; //conversion 6 bits on 5 bits
+			if(i > 315)
+				image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
 		}
+		//chThdSleepMilliseconds(100);
     }
 }
 
@@ -83,12 +84,10 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	uint8_t h = 0;
 	uint8_t s = 0;
 	uint8_t v = 0;
-	r /= 255;
-	g /= 255;
-	b /= 255;
-	uint8_t cmax = max_value(r,g,b);
-	uint8_t cmin = min_value(r,g,b);
-	uint8_t diff = cmax-cmin;
+
+	volatile uint8_t cmax = max_value(r,g,b);
+	volatile uint8_t cmin = min_value(r,g,b);
+	volatile uint8_t diff = cmax-cmin;
 
 	// compute h (range from 0..1)
 	if (cmax == cmin)
@@ -104,24 +103,28 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	if (cmax == 0)
 	      s = 0;
 	else
-	      s = (diff / cmax) * 100;
+	      s = ((diff * 100) / cmax);
 
 	// compute v (range from 0..100)
-	v = cmax * 100;
+	//v = (cmax * 100) / 255;
 
-	if (v > 75){
-		if (s > 70){
-			if ((h < 0.1) && (h > 0.8))
+	static uint8_t color = 10;
+
+	if (((cmax * 100) / 255) > 15){
+		if (s > 15){
+			if ((h < 50) && (h > 300))
 				color = 0;
-			else if ((h > 0.1) && (h < 0.45))
+			else if ((h > 50) && (h < 200))
 				color = 1;
-			else if ((h > 0.45) && (h < 0.8))
+			else if ((h > 200) && (h < 300))
 				color = 2;
 			else color = 3;
 		}
-		else color = 3;
+		else color = 4;
 	}
-	else color = 3;
+	else color = 5;
+
+	color_number = color;
 
 	return color;
 }
@@ -159,7 +162,7 @@ uint8_t min_value(uint8_t a, uint8_t b, uint8_t c){
 }
 
 uint8_t get_color(void){
-	return color;
+	return color_number;
 }
 
 void process_image_start(void){
