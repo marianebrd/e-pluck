@@ -51,8 +51,6 @@ static THD_FUNCTION(ProcessImage, arg) {
 	uint8_t buffer1[IMAGE_BUFFER_SIZE] = {0};
 	uint8_t buffer2[IMAGE_BUFFER_SIZE] = {0};
 
-	bool send_to_computer = true;
-
     while(1){
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
@@ -70,20 +68,13 @@ static THD_FUNCTION(ProcessImage, arg) {
 				buffer2[i/2+1] = (uint8_t)img_buff_ptr[i]&(0xE0 >> 5); //green mask on second line
 			}
 
-			image_g[i/2] = (buffer1[i/2] + buffer2[i/2+1])*(32/64); //conversion 6 bits on 5 bits
+			image_g[i/2] = (buffer1[i/2] + buffer2[i/2+1])*1/2; //conversion 6 bits on 5 bits
 		}
 
 		//converts the rgb values to hsv
 		for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
 			image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
 		}
-
-		if(send_to_computer){
-			//sends to the computer the image
-			SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
-		}
-		//invert the bool
-		send_to_computer = !send_to_computer;
     }
 }
 
@@ -100,7 +91,7 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	uint8_t cmin = min_value(r,g,b);
 	uint8_t diff = cmax-cmin;
 
-	// compute h
+	// compute h (range from 0..1)
 	if (cmax == cmin)
 	      h = 0;
 	else if (cmax == r)
@@ -110,13 +101,13 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	else if (cmax == b)
 	      h = (60 * ((r - g) / diff) + 240) % 360;
 
-	// compute s
+	// compute s (range from 0..100)
 	if (cmax == 0)
 	      s = 0;
 	else
 	      s = (diff / cmax) * 100;
 
-	// compute v
+	// compute v (range from 0..100)
 	v = cmax * 100;
 
 	if (v > 75){
