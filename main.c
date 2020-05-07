@@ -15,7 +15,6 @@
 #include <chprintf.h>
 #include <sensors/VL53L0X/VL53L0X.h>
 
-#include <pi_regulator.h>
 #include <process_image.h>
 
 #define TRACKING_BUFFER_SIZE		180
@@ -49,9 +48,6 @@ static void serial_start(void)
 
 int main(void)
 {
-	int j = 0;
-	volatile uint16_t object_pos[180] = {0};
-	volatile uint16_t d;
 
     halInit();
     chSysInit();
@@ -76,13 +72,6 @@ int main(void)
 
 	// pluck();
 	// deposit();
-	chThdSleepMilliseconds(1000);
-/*
-	for (int i=0; i<=179; i++)
-	{
-		chThdSleepMilliseconds(100);
-		turn(RIGHT, MIDDLE_SPEED, 1);  // tourne de 1 degr�
-		d = VL53L0X_get_dist_mm();  // mesure TOF
 
 	while(1)
 	{
