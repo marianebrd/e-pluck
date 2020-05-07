@@ -14,7 +14,7 @@
 #include <camera/po8030.h>
 #include <chprintf.h>
 #include <sensors/VL53L0X/VL53L0X.h>
-
+#include <scan.h>
 #include <pi_regulator.h>
 #include <process_image.h>
 
@@ -49,9 +49,9 @@ static void serial_start(void)
 
 int main(void)
 {
-	int j = 0;
-	volatile uint16_t object_pos[180] = {0};
-	volatile uint16_t d;
+//	int j = 0;
+//	volatile uint16_t object_pos[180] = {0};
+//	volatile uint16_t d;
 
     halInit();
     chSysInit();
@@ -72,30 +72,13 @@ int main(void)
 
 	// pluck();
 	// deposit();
-	chThdSleepMilliseconds(1000);
-/*
-	for (int i=0; i<=179; i++)
-	{
-		chThdSleepMilliseconds(100);
-		turn(RIGHT, MIDDLE_SPEED, 1);  // tourne de 1 degré
-		d = VL53L0X_get_dist_mm();  // mesure TOF
+	//chThdSleepMilliseconds(1000);
 
-		object_pos[j] = d;
-		j++;
-*/
+//	chThdSleepMilliseconds(100);
+//	SendUint16ToComputer(object_pos, TRACKING_BUFFER_SIZE);
+//	process_image_start();
 
-//		if (d < 150){
-//			if ((j == 0) | ((i - object_pos[j-1]) >= OBJECT_WIDTH))
-//			{
-//			object_pos[j] = i;
-//			j++;
-//			}
-//		}
-//	}
-
-	chThdSleepMilliseconds(100);
-	SendUint16ToComputer(object_pos, TRACKING_BUFFER_SIZE);
-	process_image_start();
+	scaning();
 
 	while(1)
 	{
