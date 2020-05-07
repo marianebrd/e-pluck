@@ -56,17 +56,23 @@ static THD_FUNCTION(ProcessImage, arg) {
 		//gets the pointer to the array filled with the last image in RGB565
 		img_buff_ptr = dcmi_get_last_image_ptr();
 
+		volatile int debug1, debug2;
+
 		//Extracts RGB pixels
 		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i++){
 			if(i%2 == 0){
 				image_r[i/2] = (((uint8_t)img_buff_ptr[i]&0xF8) >> 3)*255 / 31; //red mask
+				//debug1 = image_r[i/2];
 				buffer1[i/2] = ((uint8_t)img_buff_ptr[i]&0x07) << 3; //green mask on first line
 			}
 			else{
 				image_b[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0x1F)*255 / 31; //blue mask
+				//debug2 = image_b[(i-1)/2];
 				buffer2[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0xE0) >> 5; //green mask on second line
 			}
 		}
+		debug1 = img_buff_ptr[320];
+		debug2 = img_buff_ptr[321];
 
 		//converts the rgb values to hsv
 		for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
@@ -83,7 +89,7 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	// to change the range from 0..255 to 0..1:
 	uint8_t h = 0;
 	uint8_t s = 0;
-	uint8_t v = 0;
+	//uint8_t v = 0;
 
 	volatile uint8_t cmax = max_value(r,g,b);
 	volatile uint8_t cmin = min_value(r,g,b);

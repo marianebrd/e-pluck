@@ -52,7 +52,7 @@ int main(void)
     halInit();
     chSysInit();
     mpu_init();
-
+    VL53L0X_start();
     //starts the serial communication
     serial_start();
     //start the USB communication
@@ -62,11 +62,15 @@ int main(void)
 	po8030_start();
 	//inits the motors
 	motors_init();
-	VL53L0X_start();
+
 	//stars the threads for the processing of the image
 	process_image_start();
+	po8030_set_ae(0); //Enables/disables auto exposure ; 1 to enable auto exposure
+	po8030_set_rgb_gain(1, 1, 1); //Sets white balance red, green, blue gain
+	//po8030_set_awb(uint8_t awb) //Enable/disable auto white balance ; 1 to enable auto white balance
 
-	uint8_t c = 20;
+
+	volatile uint8_t color_test = 20;
 
 	//scan(RIGHT, MIDDLE_SPEED, 180);
 
@@ -75,7 +79,7 @@ int main(void)
 
 	while(1)
 	{
-		c = get_color();
+		color_test = get_color();
 		chThdSleepMilliseconds(500);
 	}
 }
