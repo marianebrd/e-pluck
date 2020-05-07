@@ -23,9 +23,11 @@
 #define PERIMETER_EPUCK   			(PI * WHEEL_DISTANCE)
 #define ANGLE_TO_NSTEP				NSTEP_ONE_TURN*PERIMETER_EPUCK/(WHEEL_PERIMETER*ONE_TURN_DEGREES)
 
+#define OBJECT_WIDTH				30
+
 void motors_set_pos(int l_distance, int r_distance, int l_speed, int r_speed);
 void pluck(void);
 void deposit(void);
-void scan(bool direction, int turn_speed, int turn_angle);
+void turn(bool direction, int turn_speed, int turn_angle);
 
 #endif /* MOVES_H */

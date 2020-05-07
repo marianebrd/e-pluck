@@ -13,10 +13,12 @@
 #include <moves.h>
 #include <camera/po8030.h>
 #include <chprintf.h>
+#include <sensors/VL53L0X/VL53L0X.h>
 
+#include <pi_regulator.h>
 #include <process_image.h>
 
-
+#define TRACKING_BUFFER_SIZE		180
 
 void SendUint8ToComputer(uint8_t* data, uint16_t size) 
 {
@@ -24,6 +26,14 @@ void SendUint8ToComputer(uint8_t* data, uint16_t size)
 	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)&size, sizeof(uint16_t));
 	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)data, size);
 }
+
+void SendUint16ToComputer(uint16_t* data, uint16_t size)
+{
+	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)"START", 5);
+	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)&size, sizeof(uint16_t));
+	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)data, sizeof(uint16_t)*size);
+}
+
 
 static void serial_start(void)
 {
@@ -39,6 +49,9 @@ static void serial_start(void)
 
 int main(void)
 {
+	int j = 0;
+	volatile uint16_t object_pos[180] = {0};
+	volatile uint16_t d;
 
     halInit();
     chSysInit();
@@ -63,6 +76,13 @@ int main(void)
 
 	// pluck();
 	// deposit();
+	chThdSleepMilliseconds(1000);
+/*
+	for (int i=0; i<=179; i++)
+	{
+		chThdSleepMilliseconds(100);
+		turn(RIGHT, MIDDLE_SPEED, 1);  // tourne de 1 degr�
+		d = VL53L0X_get_dist_mm();  // mesure TOF
 
 	while(1)
 	{
