@@ -49,8 +49,7 @@ static void serial_start(void)
 
 int main(void)
 {
-//	int j = 0;
-//	volatile uint16_t object_pos[180] = {0};
+//	volatile uint8_t tab[NB_TREES_MAX] = {0};
 //	volatile uint16_t d;
 
     halInit();
@@ -68,17 +67,19 @@ int main(void)
 	motors_init();
 	VL53L0X_start();
 
-	//motors_set_pos(3,3,-2,-2);
+	int* tab = scaning();
+	//	SendUint16ToComputer(tof_value, TRACKING_BUFFER_SIZE);
 
-	// pluck();
-	// deposit();
-	//chThdSleepMilliseconds(1000);
+	chThdSleepMilliseconds(1000);
 
-//	chThdSleepMilliseconds(100);
-//	SendUint16ToComputer(object_pos, TRACKING_BUFFER_SIZE);
-//	process_image_start();
-
-	scaning();
+	for (int i=0; i<1; i++)
+	{
+		if (i != 0)
+		{
+			turn(RIGHT, MIDDLE_SPEED, tab[i]);
+			pluck();
+		}
+	}
 
 	while(1)
 	{

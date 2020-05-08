@@ -11,9 +11,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define SCAN_ANGLE			180
-#define SCAN_RATE			1
+#define SCAN_ANGLE			90
+#define SCAN_RATE			2
+#define NB_TREES_MAX		5
 
-int scaning(void);
+int* scaning(void);
 
 #endif /* SCAN_H_ */

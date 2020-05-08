@@ -26,8 +26,8 @@
 #define OBJECT_WIDTH				30
 
 void motors_set_pos(int l_distance, int r_distance, int l_speed, int r_speed);
+void turn(bool direction, int turn_speed, int turn_angle);
 void pluck(void);
 void deposit(void);
-void turn(bool direction, int turn_speed, int turn_angle);
 
 #endif /* MOVES_H */
