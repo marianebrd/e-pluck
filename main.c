@@ -20,6 +20,7 @@
 
 #define TRACKING_BUFFER_SIZE		180
 
+
 void SendUint8ToComputer(uint8_t* data, uint16_t size) 
 {
 	chSequentialStreamWrite((BaseSequentialStream *)&SD3, (uint8_t*)"START", 5);
@@ -49,9 +50,6 @@ static void serial_start(void)
 
 int main(void)
 {
-//	volatile uint8_t tab[NB_TREES_MAX] = {0};
-//	volatile uint16_t d;
-
     halInit();
     chSysInit();
     mpu_init();
@@ -67,14 +65,14 @@ int main(void)
 	motors_init();
 	VL53L0X_start();
 
-	int* tab = scaning();
+	int*tab = scaning();
 	//	SendUint16ToComputer(tof_value, TRACKING_BUFFER_SIZE);
 
 	chThdSleepMilliseconds(1000);
 
-	for (int i=0; i<1; i++)
+	for (int i=0; i<NB_TREES_MAX; i++)
 	{
-		if (i != 0)
+		if (tab[i] != 0)
 		{
 			turn(RIGHT, MIDDLE_SPEED, tab[i]);
 			pluck();
@@ -83,7 +81,6 @@ int main(void)
 
 	while(1)
 	{
-		// d = VL53L0X_get_dist_mm();
 		chThdSleepMilliseconds(100);
 	}
 

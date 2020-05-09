@@ -15,7 +15,7 @@
 
 int j = 0;
 uint16_t tof_value[SCAN_ANGLE] = {0};
-int tree_angle[NB_TREES_MAX] = {0};
+static int tree_angle[NB_TREES_MAX] = {0};
 
 int* scaning(){
 
@@ -35,9 +35,9 @@ int* scaning(){
 	for (int i=3; i<SCAN_ANGLE/SCAN_RATE-3; i++)
 	{
 		if( (tof_value[i] < 200) && // exclut les minimums calculés sur l'arrière-plan
-			(tof_value[i] < tof_value[i-1]) && (tof_value[i] < tof_value[i+1]) &&
-			(tof_value[i] < tof_value[i-2]) && (tof_value[i] < tof_value[i+2]) &&
-			(tof_value[i] < tof_value[i-3]) && (tof_value[i] < tof_value[i+3]) )
+			(tof_value[i] <= tof_value[i-1]) && (tof_value[i] <= tof_value[i+1]) &&
+			(tof_value[i] <= tof_value[i-2]) && (tof_value[i] <= tof_value[i+2]) &&
+			(tof_value[i] <= tof_value[i-3]) && (tof_value[i] <= tof_value[i+3]) )
 		{
 			tree_angle[j] = i*SCAN_RATE;
 			j++;
