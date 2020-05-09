@@ -55,7 +55,7 @@ void motors_set_pos(int l_distance, int r_distance, int l_speed, int r_speed){
 	right_motor_set_pos(0);
 }
 
-void turn(bool direction, int turn_speed, int turn_angle) {
+void turn(bool direction, int turn_speed, float turn_angle) {
 	// this function detects object around the e-puck
 
 	// flags initialization
@@ -100,9 +100,9 @@ void turn(bool direction, int turn_speed, int turn_angle) {
 }
 
 void pluck(void) {
-	motors_set_pos(3, 3, MIDDLE_SPEED, MIDDLE_SPEED);
+	motors_set_pos(5, 5, HIGH_SPEED, HIGH_SPEED);
 	chThdSleepMilliseconds(1000);
-	motors_set_pos(3, 3, -LOW_SPEED, -LOW_SPEED);
+	motors_set_pos(5, 5, -MIDDLE_SPEED, -MIDDLE_SPEED);
 }
 
 void deposit(void) {

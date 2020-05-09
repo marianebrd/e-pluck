@@ -72,10 +72,17 @@ int main(void)
 
 	for (int i=0; i<NB_TREES_MAX; i++)
 	{
-		if (tab[i] != 0)
+		if (tab[2*i] != 0)
 		{
-			turn(RIGHT, MIDDLE_SPEED, tab[i]);
+			if (i==0) turn(RIGHT, MIDDLE_SPEED, tab[2*i]);
+			else turn(RIGHT, MIDDLE_SPEED, tab[2*i]-tab[2*(i-1)]);
+
+			chThdSleepMilliseconds(500);
+			motors_set_pos(abs(tab[2*i+1]/10 - 10), abs(tab[2*i+1]/10 - 10), MIDDLE_SPEED, MIDDLE_SPEED);
+			chThdSleepMilliseconds(500);
 			pluck();
+			chThdSleepMilliseconds(500);
+			motors_set_pos(abs(tab[2*i+1]/10 - 10), abs(tab[2*i+1]/10 - 10), -MIDDLE_SPEED, -MIDDLE_SPEED);
 		}
 	}
 

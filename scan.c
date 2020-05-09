@@ -15,16 +15,16 @@
 
 int j = 0;
 uint16_t tof_value[SCAN_ANGLE] = {0};
-static int tree_angle[NB_TREES_MAX] = {0};
+static int tree_angle[NB_TREES_MAX*2] = {0};
 
 int* scaning(){
 
 	j = 0;
 
-	for (int i=0; i<SCAN_ANGLE/SCAN_RATE; i++)
+	for (int i=0; i < (int) ((float)(SCAN_ANGLE)/SCAN_RATE); i++)
 	{
 		chThdSleepMilliseconds(100);
-		turn(RIGHT, LOW_SPEED, SCAN_RATE);  // tourne
+		turn(RIGHT, MIDDLE_SPEED, SCAN_RATE*0.9);  // tourne
 		tof_value[j] = VL53L0X_get_dist_mm();  // mesure TOF
 		j++;
 	}
@@ -39,8 +39,12 @@ int* scaning(){
 			(tof_value[i] <= tof_value[i-2]) && (tof_value[i] <= tof_value[i+2]) &&
 			(tof_value[i] <= tof_value[i-3]) && (tof_value[i] <= tof_value[i+3]) )
 		{
-			tree_angle[j] = i*SCAN_RATE;
+			if ((j == 0) || ((i*SCAN_RATE - tree_angle[2*(j-1)]) > 20))
+			{
+			tree_angle[2*j] = i*SCAN_RATE;
+			tree_angle[2*j+1] = tof_value[i];
 			j++;
+			}
 		}
 	}
 	// go back to home position
