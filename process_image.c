@@ -58,7 +58,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 
 		//volatile int debug1, debug2;
 
-		/*
+
 		//Extracts RGB pixels
 		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i++){
 			if(i%2 == 0){
@@ -72,8 +72,8 @@ static THD_FUNCTION(ProcessImage, arg) {
 				buffer2[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0xE0) >> 5; //green mask on second line
 			}
 		}
-		*/
 
+/*
 		//Extracts RGB pixels
 		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i++){
 			if(i%2 == 0){
@@ -87,14 +87,15 @@ static THD_FUNCTION(ProcessImage, arg) {
 				buffer2[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0xE0) >> 2; //green mask on second line
 			}
 		}
-
+*/
 		//debug1 = img_buff_ptr[320];
 		//debug2 = img_buff_ptr[321];
 		//debug1 = buffer1[320];
 		//debug2 = buffer2[320];
 
 		//converts the rgb values to hsv
-		for (uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i+=2){
+		for (uint16_t i = 1 ; i < IMAGE_BUFFER_SIZE ; i+=2){
+		//for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
 			image_g[i] = ((buffer1[i] | buffer2[i]))*255 / 63; //conversion 6 bits on 5 bits
 			if(i > 315)
 				image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
@@ -119,11 +120,11 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	if (cmax == cmin)
 	      h = 0;
 	else if (cmax == r)
-	      h = ((60 * ((g - b) * 100) / diff) + 360) % 360;
+	      h = (60 * ((abs(g - b)) * 100) / diff) % 360;
 	else if (cmax == g)
-	      h = ((60 * ((b - r) * 100) / diff) + 120) % 360;
+	      h = (60 * ((abs(b - r)) * 100) / diff) % 360;
 	else if (cmax == b)
-	      h = ((60 * ((r - g) * 100) / diff) + 240) % 360;
+	      h = (60 * ((abs(r - g)) * 100) / diff) % 360;
 
 	// compute s (range from 0..100)
 	if (cmax == 0)
@@ -136,13 +137,13 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 
 	static uint8_t color = 10;
 
-	if (v > 15){
-		if (s > 15){
-			if ((h > 300) && (h < 50))
+	if (v > 50){
+		if (s > 50){
+			if ((h > 300) && (h < 50)) //red
 				color = 0;
-			else if ((h > 50) && (h < 200))
+			else if ((h > 50) && (h < 200)) //green
 				color = 1;
-			else if ((h > 200) && (h < 300))
+			else if ((h > 200) && (h < 300)) //blue
 				color = 2;
 		}
 		else color = 4;
