@@ -24,7 +24,7 @@ int* scaning(){
 	for (int i=0; i < (int) ((float)(SCAN_ANGLE)/SCAN_RATE); i++)
 	{
 		chThdSleepMilliseconds(100);
-		turn(RIGHT, MIDDLE_SPEED, SCAN_RATE*0.9);  // tourne
+		turn(RIGHT, MIDDLE_SPEED, SCAN_RATE);  // tourne d'un a-coup
 		tof_value[j] = VL53L0X_get_dist_mm();  // mesure TOF
 		j++;
 	}
@@ -34,7 +34,7 @@ int* scaning(){
 	// trouve les minimums locaux des mesures du TOF
 	for (int i=3; i<SCAN_ANGLE/SCAN_RATE-3; i++)
 	{
-		if( (tof_value[i] < 200) && // exclut les minimums calculés sur l'arrière-plan
+		if( (tof_value[i] < TREE_DISTANCE_MAX) && // exclut les minimums calculés sur l'arrière-plan
 			(tof_value[i] <= tof_value[i-1]) && (tof_value[i] <= tof_value[i+1]) &&
 			(tof_value[i] <= tof_value[i-2]) && (tof_value[i] <= tof_value[i+2]) &&
 			(tof_value[i] <= tof_value[i-3]) && (tof_value[i] <= tof_value[i+3]) )

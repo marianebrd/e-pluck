@@ -78,11 +78,10 @@ int main(void)
 			else turn(RIGHT, MIDDLE_SPEED, tab[2*i]-tab[2*(i-1)]);
 
 			chThdSleepMilliseconds(500);
-			motors_set_pos(abs(tab[2*i+1]/10 - 10), abs(tab[2*i+1]/10 - 10), MIDDLE_SPEED, MIDDLE_SPEED);
+			motors_set_pos(abs(0.075*tab[2*i+1] - 6), abs(0.075*tab[2*i+1] - 6), MIDDLE_SPEED, MIDDLE_SPEED);
 			chThdSleepMilliseconds(500);
 			pluck();
-			chThdSleepMilliseconds(500);
-			motors_set_pos(abs(tab[2*i+1]/10 - 10), abs(tab[2*i+1]/10 - 10), -MIDDLE_SPEED, -MIDDLE_SPEED);
+			motors_set_pos(abs(0.075*tab[2*i+1] - 6), abs(0.075*tab[2*i+1] - 6), -MIDDLE_SPEED, -MIDDLE_SPEED);
 		}
 	}
 

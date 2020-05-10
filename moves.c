@@ -15,7 +15,7 @@
 static int l_pos;
 static int r_pos;
 
-void motors_set_pos(int l_distance, int r_distance, int l_speed, int r_speed){
+void motors_set_pos(float l_distance, float r_distance, int l_speed, int r_speed){
 	// this function allows to control both motors at the same time
 
 	// transforms from cm to nb steps
@@ -100,16 +100,14 @@ void turn(bool direction, int turn_speed, float turn_angle) {
 }
 
 void pluck(void) {
-	motors_set_pos(5, 5, HIGH_SPEED, HIGH_SPEED);
+	motors_set_pos(PUCK_DISTANCE, PUCK_DISTANCE, HIGH_SPEED, HIGH_SPEED);
 	chThdSleepMilliseconds(1000);
-	motors_set_pos(5, 5, -MIDDLE_SPEED, -MIDDLE_SPEED);
+	motors_set_pos(PUCK_DISTANCE, PUCK_DISTANCE, -MIDDLE_SPEED, -MIDDLE_SPEED);
 }
 
 void deposit(void) {
-	motors_set_pos(3, 3, -HIGH_SPEED, -HIGH_SPEED);
-	motors_set_pos(3, 3, HIGH_SPEED, HIGH_SPEED);
-	motors_set_pos(3, 3, -HIGH_SPEED, -HIGH_SPEED);
-	motors_set_pos(3, 3, HIGH_SPEED, HIGH_SPEED);
-	motors_set_pos(3, 3, -HIGH_SPEED, -HIGH_SPEED);
-	motors_set_pos(3, 3, HIGH_SPEED, HIGH_SPEED);
+	for (int i=0; i<3; i++){
+	motors_set_pos(DEPOSIT_DISTANCE, DEPOSIT_DISTANCE, -HIGH_SPEED, -HIGH_SPEED);
+	motors_set_pos(DEPOSIT_DISTANCE, DEPOSIT_DISTANCE, HIGH_SPEED, HIGH_SPEED);
+	}
 }

@@ -7,7 +7,7 @@
 #define STOP_SPEED					0 // [cm/s]
 #define LOW_SPEED					2 // [cm/s]
 #define MIDDLE_SPEED				4 // [cm/s]
-#define HIGH_SPEED					8 // [cm/s]
+#define HIGH_SPEED					10 // [cm/s]
 #define ONE_TURN_DEGREES			360 // degrees
 #define TIMER_CLOCK        			84000000
 #define TIMER_FREQ          		100000 // [Hz]
@@ -22,10 +22,10 @@
 #define WHEEL_DISTANCE     			5.35f //cm
 #define PERIMETER_EPUCK   			(PI * WHEEL_DISTANCE)
 #define ANGLE_TO_NSTEP				NSTEP_ONE_TURN*PERIMETER_EPUCK/(WHEEL_PERIMETER*ONE_TURN_DEGREES)
+#define PUCK_DISTANCE				6
+#define DEPOSIT_DISTANCE			3
 
-#define OBJECT_WIDTH				30
-
-void motors_set_pos(int l_distance, int r_distance, int l_speed, int r_speed);
+void motors_set_pos(float l_distance, float r_distance, int l_speed, int r_speed);
 void turn(bool direction, int turn_speed, float turn_angle);
 void pluck(void);
 void deposit(void);
