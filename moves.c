@@ -55,7 +55,6 @@ void motors_set_pos(float l_distance, float r_distance, int l_speed, int r_speed
 	right_motor_set_pos(0);
 }
 
-void deposit(void) {
 void turn(bool direction, int turn_speed, float turn_angle) {
 	// this function detects object around the e-puck
 
@@ -111,4 +110,27 @@ void deposit(void) {
 	motors_set_pos(DEPOSIT_DISTANCE, DEPOSIT_DISTANCE, -HIGH_SPEED, -HIGH_SPEED);
 	motors_set_pos(DEPOSIT_DISTANCE, DEPOSIT_DISTANCE, HIGH_SPEED, HIGH_SPEED);
 	}
+}
+
+void victory(void) {
+	turn(RIGHT, HIGH_SPEED, ONE_TURN_DEGREES);
+
+	for (int i = 0 ; i<50 ; i++){
+		palClearPad(GPIOD, GPIOD_LED1);
+		palClearPad(GPIOD, GPIOD_LED3);
+		palClearPad(GPIOD, GPIOD_LED5);
+		palClearPad(GPIOD, GPIOD_LED7);
+		palClearPad(GPIOD, GPIOD_LED_FRONT);
+		palClearPad(GPIOB, GPIOB_LED_BODY);
+		chThdSleepMilliseconds(100);
+		palTogglePad(GPIOD, GPIOD_LED1);
+		palTogglePad(GPIOD, GPIOD_LED3);
+		palTogglePad(GPIOD, GPIOD_LED5);
+		palTogglePad(GPIOD, GPIOD_LED7);
+		palTogglePad(GPIOD, GPIOD_LED_FRONT);
+		palTogglePad(GPIOB, GPIOB_LED_BODY);
+		chThdSleepMilliseconds(100);
+	}
+	palClearPad(GPIOD, GPIOD_LED_FRONT);
+	palClearPad(GPIOB, GPIOB_LED_BODY);
 }

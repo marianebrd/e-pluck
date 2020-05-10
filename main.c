@@ -16,6 +16,7 @@
 #include <sensors/VL53L0X/VL53L0X.h>
 #include <scan.h>
 #include <process_image.h>
+#include <leds.h>
 
 #define TRACKING_BUFFER_SIZE		180
 
@@ -69,34 +70,41 @@ int main(void)
 	process_image_start();
 
 	chThdSleepMilliseconds(1000);
-	volatile uint8_t color_test = 20;
 
-	//scan(RIGHT, MIDDLE_SPEED, 180);
-
-	// pluck();
-	// deposit();
+	//volatile uint8_t color_test = 20;
+	int j = 0;
 
 	for (int i=0; i<NB_TREES_MAX; i++)
 	{
-		if (tab[2*i] != 0)
+		if (tab[(2*i)+1] != 0)
 		{
-			if (i==0) turn(RIGHT, MIDDLE_SPEED, tab[2*i]);
-			else turn(RIGHT, MIDDLE_SPEED, tab[2*i]-tab[2*(i-1)]);
-
-			chThdSleepMilliseconds(500);
-			motors_set_pos(abs(0.075*tab[2*i+1] - 6), abs(0.075*tab[2*i+1] - 6), MIDDLE_SPEED, MIDDLE_SPEED);
-			chThdSleepMilliseconds(500);
-			pluck();
-			motors_set_pos(abs(0.075*tab[2*i+1] - 6), abs(0.075*tab[2*i+1] - 6), -MIDDLE_SPEED, -MIDDLE_SPEED);
+				if (i==0)
+					turn(RIGHT, MIDDLE_SPEED, ANGLE_CORR*tab[2*i]);
+				else
+					turn(RIGHT, MIDDLE_SPEED, ANGLE_CORR*(tab[2*i]-tab[2*(i-1)]));
+				chThdSleepMilliseconds(500);
+				motors_set_pos(abs(MOVE_SLOPE_CORR*tab[2*i+1] - MOVE_OFFSET_CORR), abs(MOVE_SLOPE_CORR*tab[2*i+1] - MOVE_OFFSET_CORR), MIDDLE_SPEED, MIDDLE_SPEED);
+				chThdSleepMilliseconds(1000);
+				if ((get_color() == YELLOW) || (get_color() == RED))
+					pluck();
+				motors_set_pos(abs(MOVE_SLOPE_CORR*tab[2*i+1] - MOVE_OFFSET_CORR), abs(MOVE_SLOPE_CORR*tab[2*i+1] - MOVE_OFFSET_CORR), -MIDDLE_SPEED, -MIDDLE_SPEED);
+				j++;
 		}
-		color_test = get_color();
 	}
+	turn(RIGHT, MIDDLE_SPEED, (THREE_QUARTERS_TURN - tab[2*(j-1)]));
+	chThdSleepMilliseconds(500);
+	motors_set_pos(DISTANCE_TO_BASKET, DISTANCE_TO_BASKET, MIDDLE_SPEED, MIDDLE_SPEED);
+	chThdSleepMilliseconds(500);
+
+	if (j != 0)
+		deposit();
+
+	victory();
 
 	while(1)
 	{
-		chThdSleepMilliseconds(100);
+		chThdSleepMilliseconds(500);
 	}
-
 }
 
 #define STACK_CHK_GUARD 0xe2dee396

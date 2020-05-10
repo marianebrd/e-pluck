@@ -23,11 +23,12 @@
 #define PERIMETER_EPUCK   			(PI * WHEEL_DISTANCE)
 #define ANGLE_TO_NSTEP				NSTEP_ONE_TURN*PERIMETER_EPUCK/(WHEEL_PERIMETER*ONE_TURN_DEGREES)
 #define PUCK_DISTANCE				6
-#define DEPOSIT_DISTANCE			3
+#define DEPOSIT_DISTANCE			5
 
 void motors_set_pos(float l_distance, float r_distance, int l_speed, int r_speed);
 void turn(bool direction, int turn_speed, float turn_angle);
 void pluck(void);
 void deposit(void);
+void victory(void);
 
 #endif /* MOVES_H */
