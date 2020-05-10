@@ -65,10 +65,6 @@ int main(void)
 
 	//stars the threads for the processing of the image
 	process_image_start();
-	po8030_set_ae(0); //Enables/disables auto exposure ; 1 to enable auto exposure
-	//po8030_set_rgb_gain(1, 1, 1); //Sets white balance red, green, blue gain
-	po8030_set_awb(0); //Enable/disable auto white balance ; 1 to enable auto white balance
-
 
 	volatile uint8_t color_test = 20;
 

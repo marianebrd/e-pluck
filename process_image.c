@@ -20,7 +20,11 @@ static THD_FUNCTION(CaptureImage, arg) {
     (void)arg;
 
 	//Takes pixels 0 to IMAGE_BUFFER_SIZE of the line 10 + 11 (minimum 2 lines because reasons)
-	po8030_advanced_config(FORMAT_RGB565, 0, 10, IMAGE_BUFFER_SIZE, 2, SUBSAMPLING_X1, SUBSAMPLING_X1);
+	po8030_advanced_config(FORMAT_RGB565, 0, 50, IMAGE_BUFFER_SIZE, 2, SUBSAMPLING_X1, SUBSAMPLING_X1);
+
+	po8030_set_rgb_gain(94, 64, 93); //Sets white balance red, green, blue gain
+	po8030_set_contrast(42); //Sets the contrast of the camera
+
 	dcmi_enable_double_buffering();
 	dcmi_set_capture_mode(CAPTURE_ONE_SHOT);
 	dcmi_prepare();
@@ -50,58 +54,32 @@ static THD_FUNCTION(ProcessImage, arg) {
 	static uint8_t buffer1[IMAGE_BUFFER_SIZE] = {0};
 	static uint8_t buffer2[IMAGE_BUFFER_SIZE] = {0};
 
+	//bool send_to_computer = true;
+
     while(1){
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
 		//gets the pointer to the array filled with the last image in RGB565
 		img_buff_ptr = dcmi_get_last_image_ptr();
 
-		//volatile int debug1, debug2;
-
-
 		//Extracts RGB pixels
 		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i++){
 			if(i%2 == 0){
 				image_r[i/2] = (((uint8_t)img_buff_ptr[i]&0xF8) >> 3)*255 / 31; //red mask
-				//debug1 = image_r[i/2];
 				buffer1[i/2] = ((uint8_t)img_buff_ptr[i]&0x07) << 3; //green mask on first line
 			}
 			else{
 				image_b[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0x1F)*255 / 31; //blue mask
-				//debug2 = image_b[(i-1)/2];
 				buffer2[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0xE0) >> 5; //green mask on second line
 			}
 		}
 
-/*
-		//Extracts RGB pixels
-		for(uint16_t i = 0 ; i < (2 * IMAGE_BUFFER_SIZE) ; i++){
-			if(i%2 == 0){
-				image_b[i/2] = (((uint8_t)img_buff_ptr[i]&0xF8) >> 3)*255 / 31; //red mask
-				//debug1 = image_r[i/2];
-				buffer1[i/2] = ((uint8_t)img_buff_ptr[i]&0x07); //green mask on first line
-			}
-			else{
-				image_r[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0x1F)*255 / 31; //blue mask
-				//debug2 = image_b[(i-1)/2];
-				buffer2[(i-1)/2] = ((uint8_t)img_buff_ptr[i]&0xE0) >> 2; //green mask on second line
-			}
-		}
-*/
-		//debug1 = img_buff_ptr[320];
-		//debug2 = img_buff_ptr[321];
-		//debug1 = buffer1[320];
-		//debug2 = buffer2[320];
-
 		//converts the rgb values to hsv
-		for (uint16_t i = 1 ; i < IMAGE_BUFFER_SIZE ; i+=2){
-		//for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++){
+		for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i+=2){
 			image_g[i] = ((buffer1[i] | buffer2[i]))*255 / 63; //conversion 6 bits on 5 bits
-			if(i > 315)
+			if(i == 320)
 				image[i] = rgb_to_hsv(image_r[i], image_g[i], image_b[i]);
 		}
-
-		//chThdSleepMilliseconds(100);
     }
 }
 
@@ -120,11 +98,11 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 	if (cmax == cmin)
 	      h = 0;
 	else if (cmax == r)
-	      h = (60 * ((abs(g - b)) * 100) / diff) % 360;
+	      h = ((60 * ((abs(g - b) * 100) / diff)) + 360) % 360;
 	else if (cmax == g)
-	      h = (60 * ((abs(b - r)) * 100) / diff) % 360;
+	      h = ((60 * ((abs(b - r) * 100) / diff)) + 240) % 360;
 	else if (cmax == b)
-	      h = (60 * ((abs(r - g)) * 100) / diff) % 360;
+	      h = ((60 * ((abs(r - g) * 100) / diff)) + 120) % 360;
 
 	// compute s (range from 0..100)
 	if (cmax == 0)
@@ -137,18 +115,11 @@ uint8_t rgb_to_hsv(uint8_t r, uint8_t g, uint8_t b){
 
 	static uint8_t color = 10;
 
-	if (v > 50){
-		if (s > 50){
-			if ((h > 300) && (h < 50)) //red
-				color = 0;
-			else if ((h > 50) && (h < 200)) //green
-				color = 1;
-			else if ((h > 200) && (h < 300)) //blue
-				color = 2;
-		}
-		else color = 4;
-	}
-	else color = 5;
+	if ((s > 45) && (v > 45))
+		if ((h < 75) || (h > 200))
+			color = 0; //red to yellow
+		else color = 1; //other than red or yellow
+	else color = 2; //black or white
 
 	color_number = color;
 
