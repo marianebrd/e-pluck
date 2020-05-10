@@ -15,7 +15,7 @@
 #define NSTEP_ONE_EL_TURN   		4  //number of steps to do 1 electrical turn
 #define NB_OF_PHASES        		4  //number of phases of the motors
 #define WHEEL_PERIMETER     		12.95f // [cm]
-#define NSTEP_FOR_360_ROTATION 		1308 // number of steps to do a rotation of 360°
+#define NSTEP_FOR_360_ROTATION 		1308 // number of steps to do a rotation of 360ï¿½
 #define RIGHT						1
 #define LEFT						0
 #define PI                			3.1415926536f

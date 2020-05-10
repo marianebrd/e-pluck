@@ -15,11 +15,9 @@
 #include <chprintf.h>
 #include <sensors/VL53L0X/VL53L0X.h>
 #include <scan.h>
-#include <pi_regulator.h>
 #include <process_image.h>
 
 #define TRACKING_BUFFER_SIZE		180
-
 
 void SendUint8ToComputer(uint8_t* data, uint16_t size) 
 {
@@ -53,7 +51,7 @@ int main(void)
     halInit();
     chSysInit();
     mpu_init();
-
+    VL53L0X_start();
     //starts the serial communication
     serial_start();
     //start the USB communication
@@ -67,8 +65,16 @@ int main(void)
 
 	int*tab = scaning();
 	//	SendUint16ToComputer(tof_value, TRACKING_BUFFER_SIZE);
+	//stars the threads for the processing of the image
+	process_image_start();
 
 	chThdSleepMilliseconds(1000);
+	volatile uint8_t color_test = 20;
+
+	//scan(RIGHT, MIDDLE_SPEED, 180);
+
+	// pluck();
+	// deposit();
 
 	for (int i=0; i<NB_TREES_MAX; i++)
 	{
@@ -83,6 +89,7 @@ int main(void)
 			pluck();
 			motors_set_pos(abs(0.075*tab[2*i+1] - 6), abs(0.075*tab[2*i+1] - 6), -MIDDLE_SPEED, -MIDDLE_SPEED);
 		}
+		color_test = get_color();
 	}
 
 	while(1)

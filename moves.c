@@ -55,6 +55,7 @@ void motors_set_pos(float l_distance, float r_distance, int l_speed, int r_speed
 	right_motor_set_pos(0);
 }
 
+void deposit(void) {
 void turn(bool direction, int turn_speed, float turn_angle) {
 	// this function detects object around the e-puck
 
