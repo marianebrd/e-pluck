@@ -71,6 +71,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 			}
 		}
 
+		//Links the two buffer with the green pixels values
 		for (uint16_t i = 0 ; i < IMAGE_BUFFER_SIZE ; i++)
 			image_g[i] = ((buffer1[i] | buffer2[i])) * MAX_PIXEL / DEC_RANGE6; //conversion 6 bits on 5 bits
 
@@ -78,6 +79,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 		uint16_t green = 0;
 		uint16_t blue = 0;
 
+		//Averages the RGB values
 		for (uint16_t i = ((IMAGE_BUFFER_SIZE/2) - (LINE_WIDTH/2)) ; i < ((IMAGE_BUFFER_SIZE/2) +( LINE_WIDTH/2)) ; i++){
 			red += image_r[i];
 			green += image_g[i];

@@ -22,9 +22,16 @@
 #define DEC_RANGE6			63
 #define LINE_WIDTH			40
 
+//Thresholds the RGB values to get the color seen on the image
 uint8_t rgb_color(uint8_t r, uint8_t g, uint8_t b);
+
+//Gets maximum value between 3 numbers
 uint8_t max_value(uint8_t a, uint8_t b, uint8_t c);
+
+//Returns color value
 uint8_t get_color(void);
+
+//Inits ProcessImage and CaptureImage threads
 void process_image_start(void);
 
 #endif /* PROCESS_IMAGE_H */
